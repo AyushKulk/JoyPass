@@ -3,45 +3,33 @@ import './App.css';
 import { AwesomeButton } from 'react-awesome-button';
 import 'react-awesome-button/dist/styles.css';
 import 'react-awesome-button/dist/themes/theme-rickiest.css';
-import ArtistCard from './ArtistCard';
+import ArtistCard from './ArtistCard.js';
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';;
 
-import { useEffect } from 'react';
-import { useState } from 'react';
-
-
-import axios from 'axios';
-
+import HomePage from './Home';
 
 function App() {
-  const CLIENT_ID = "96973c1e9d4b4f77b48f7749e6a2cf7d"
-  const REDIRECT_URI = "http://localhost:3000"
-  const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
-  const RESPONSE_TYPE = "token"
+  return (
+    <Router>
+      <div>
+        <nav>
+          {/* Navigation links */}
+        </nav>
+        <Switch>
+          <Route path="/" exact component={HomePage} />
+          <Route path="/artists" component={ArtistCard} />
+        </Switch>
+      </div>
+    </Router>
+  );
+}
 
-  const [token, setToken] = useState("");
+
   const [searchKey, setSearchKey] = useState("");
   const [artists, setArtists] = useState([]);
 
-  useEffect(() => {
-    const hash = window.location.hash
-    let token = window.localStorage.getItem("token")
 
-    if (!token && hash) { 
-      token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
-      console.log(token);
-
-      window.location.hash = ""
-      window.localStorage.setItem("token", token)
-    }
-    setToken(token)
-  }, [])
-
-const logout = () => { 
-  setToken("");
-  window.localStorage.removeItem("token");
-}
 
 const searchArtists = async (e) => {
   e.preventDefault()
@@ -86,10 +74,12 @@ const fetchTopArtists = async (accessToken) => {
   return response.data.items;
 };
 
+// page render
 return (
     <div className="App">
       <header className="App-header">
-        <h1>Spotify React</h1>
+        <img></img>
+        <h1>JoyPass</h1>
         {!token ? 
           <AwesomeButton type="primary" onPress={loginToSpotify}>Connect Spotify!</AwesomeButton>
           : <button onClick={logout}>Logout</button>} 
@@ -105,7 +95,6 @@ return (
 
       </header>
     </div>
-  );
-}
+);
 
 export default App;
